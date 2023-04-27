@@ -26,6 +26,14 @@ streamlit.dataframe(fruits_to_show)
 
 #import requests
 
+# Create function
+def get_fruityvice_data (this_fruit_choice):
+  fruityvice_response = requests.get("https://fruityvice.com/api/fruit/"+this_fruit_choice)
+  # this normalizes the json version of the response
+  fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
+  return fruityvice_normalized
+  
+
 # New section to display Fruityvice api response
 streamlit.header("Fruityvice Fruit Advice!")
 try:
@@ -34,11 +42,9 @@ try:
     streamlit.error('Please select a fruit to get information.')
   else:
     streamlit.write('The user entered ', fruit_choice)
-    fruityvice_response = requests.get("https://fruityvice.com/api/fruit/"+fruit_choice)
-    # this normalizes the json version of the response
-    fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
+    back_from_function = get_fruity_vice_data(fruit_choice)
     # output it as a table
-    streamlit.dataframe(fruityvice_normalized)
+    streamlit.dataframe(back_from_function)
 
 except URLError as e:
   streamlit.error()
